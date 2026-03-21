@@ -1,0 +1,74 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+from contextlib import asynccontextmanager
+import os
+
+from app.core.config import settings
+from app.routers import auth, tasks, documents, search, analytics, users
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Pre-load the sentence-transformer model + FAISS index on startup."""
+    from app.services.search_service import get_search_service
+    svc = get_search_service()
+    print(f"[startup] VectorSearchService ready. FAISS vectors: {svc.total_vectors}")
+    yield
+    print("[shutdown] Goodbye.")
+
+
+app = FastAPI(
+    title=settings.APP_NAME,
+    description=(
+        "AI-powered Task & Knowledge Management System\n\n"
+        "**Roles**\n"
+        "- `admin` â€“ full access (upload docs, create/assign tasks, analytics)\n"
+        "- `user`  â€“ view assigned tasks, update status, search documents\n\n"
+        "**Quick start**\n"
+        "1. `POST /auth/login` with `{username, password}`\n"
+        "2. Copy `access_token` â†’ Authorize (top-right ðŸ”’)\n"
+        "3. Explore endpoints\n"
+    ),
+    version="1.0.0",
+    lifespan=lifespan,
+)
+
+# â”€â”€ CORS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# â”€â”€ Routers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+app.include_router(auth.router)
+app.include_router(tasks.router)
+app.include_router(documents.router)
+app.include_router(search.router)
+app.include_router(analytics.router)
+app.include_router(users.router)
+
+
+# â”€â”€ Frontend UI â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+_static = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
+
+@app.get("/", include_in_schema=False)
+def root():
+    idx = os.path.join(_static, "index.html")
+    if os.path.exists(idx):
+        return FileResponse(idx)
+    return {"service": settings.APP_NAME, "version": "1.0.0", "status": "running", "docs": "/docs", "ui": "Place static/index.html to enable the UI"}
+
+if os.path.exists(_static):
+    app.mount("/static", StaticFiles(directory=_static), name="static")
+
+
+@app.get("/health", tags=["Health"])
+def health():
+    from app.services.search_service import get_search_service
+    svc = get_search_service()
+    return {"status": "healthy", "faiss_vectors": svc.total_vectors}

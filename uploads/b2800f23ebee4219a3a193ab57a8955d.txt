@@ -1,0 +1,16 @@
+Employee Onboarding Guide
+
+Welcome to the company!
+
+Steps for onboarding:
+1. Complete HR documentation.
+2. Set up your system login credentials.
+3. Install required software tools.
+4. Attend the orientation session.
+
+Key tools:
+- Slack for communication
+- Jira for task management
+- GitHub for code repository
+
+For any issues, contact HR at hr@company.com.

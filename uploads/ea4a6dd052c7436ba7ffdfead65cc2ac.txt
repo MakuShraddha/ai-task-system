@@ -1,0 +1,14 @@
+Security Policy
+
+To maintain system security:
+
+1. Do not share passwords.
+2. Use strong passwords (minimum 12 characters).
+3. Enable two-factor authentication (2FA).
+4. Report suspicious activity immediately.
+
+Data Protection:
+- Sensitive data must be encrypted.
+- Avoid using public Wi-Fi for work tasks.
+
+Violation of policies may result in disciplinary action.

@@ -1,0 +1,15 @@
+Project Development Guidelines
+
+All developers must follow these guidelines:
+
+1. Use version control (Git).
+2. Follow clean code principles.
+3. Write unit tests for critical logic.
+4. Use meaningful commit messages.
+
+Branching Strategy:
+- main: production-ready code
+- dev: development branch
+- feature/*: new features
+
+Code reviews are mandatory before merging.

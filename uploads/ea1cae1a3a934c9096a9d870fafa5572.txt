@@ -1,0 +1,15 @@
+Task Completion Guide
+
+To complete assigned tasks:
+
+1. Understand the task requirements.
+2. Search the knowledge base for relevant information.
+3. Implement the solution.
+4. Test thoroughly before marking as completed.
+
+Best Practices:
+- Ask questions if unclear
+- Document your approach
+- Follow deadlines
+
+Update task status only after full completion.

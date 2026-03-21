@@ -1,0 +1,15 @@
+API Usage Guide
+
+Base URL: http://localhost:8000
+
+Authentication:
+- Use JWT token in headers
+- Format: Authorization: Bearer <token>
+
+Important Endpoints:
+- POST /auth/login
+- GET /tasks
+- POST /documents
+- POST /search
+
+Always validate input before sending requests.
