@@ -1,0 +1,21 @@
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment file (contains your MySQL password)
+.env
+
+# FAISS index files (auto-regenerated)
+faiss_index.bin
+faiss_id_map.npy
+
+# Uploaded files
+uploads/
+
+# OS files
+.DS_Store
+Thumbs.db
